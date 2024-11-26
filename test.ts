@@ -1,7 +1,7 @@
 import { handler } from './index'
 
 handler(
-  {},
+  { body: '{\n    "test": ""\n}' },
   {
     callbackWaitsForEmptyEventLoop: false,
     functionName: '',

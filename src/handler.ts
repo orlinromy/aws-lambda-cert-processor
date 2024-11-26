@@ -1,7 +1,8 @@
 import { Handler } from 'aws-lambda'
 
 import AWS from 'aws-sdk'
-import crypto, { X509Certificate } from 'crypto'
+import { X509Certificate } from 'crypto'
+import { sign } from './helper/sign'
 
 const s3 = new AWS.S3()
 const dynamoDB = new AWS.DynamoDB.DocumentClient({
@@ -9,6 +10,14 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient({
 })
 
 export const lambdaHandler: Handler = async (event, context): Promise<any> => {
+  const requestBody = event.body
+  let algorithm = 'rsa'
+  if (requestBody) {
+    const parsedRequestBody = JSON.parse(requestBody)
+    if (parsedRequestBody.algorithm) {
+      algorithm = parsedRequestBody.algorithm
+    }
+  }
   try {
     const bucketName = 'testing-cert'
     const objectKey = 'public.pem'
@@ -29,48 +38,25 @@ export const lambdaHandler: Handler = async (event, context): Promise<any> => {
     }
     const commonName = commonNameMatch[1]
 
-    console.log('generating private key using RSA...')
-    const { privateKey, publicKey: generatedPublicKey } =
-      crypto.generateKeyPairSync('rsa', {
-        modulusLength: 2048
-      })
-
-    console.log('signing public key with private key...')
-    const sign = crypto.createSign('SHA256')
-    sign.update(publicKey)
-    sign.end()
-    const signature = sign.sign(privateKey, 'base64')
+    console.log(`signing public key...`)
+    const { signature, signingAlgorithm } = sign(publicKey, algorithm)
+    console.log(
+      `signed with ${signingAlgorithm} and signature starts with ${signature.slice(
+        0,
+        5
+      )}`
+    )
 
     console.log('writing data to dynamoDB...')
     const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
       TableName: dynamoTableName,
       Item: {
         CommonName: commonName,
-        EncryptedKey: signature
+        EncryptedKey: signature,
+        Algorithm: signingAlgorithm
       }
     }
     await dynamoDB.put(params).promise()
-
-    // bonus: generate private key using EC
-    console.log('generating private key using EC...')
-    const { privateKey: ecPrivateKey, publicKey: ecPublicKey } =
-      crypto.generateKeyPairSync('ec', {
-        namedCurve: 'P-256',
-        publicKeyEncoding: {
-          type: 'spki',
-          format: 'pem'
-        },
-        privateKeyEncoding: {
-          type: 'pkcs8',
-          format: 'pem'
-        }
-      })
-
-    console.log('signing public key with EC private key...')
-    const shaSign = crypto.createSign('SHA256')
-    shaSign.update(publicKey)
-    shaSign.end()
-    const ecSignature = shaSign.sign(ecPrivateKey, 'base64')
 
     return {
       statusCode: 200,
