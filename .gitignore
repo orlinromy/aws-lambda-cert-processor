@@ -39,4 +39,8 @@ lib/*.js
 test/*.js
 *.map
 
+.DS_Store
 .env
+
+# Build folder
+dist
