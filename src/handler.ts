@@ -3,14 +3,9 @@ import { Handler } from 'aws-lambda'
 import AWS from 'aws-sdk'
 import crypto, { X509Certificate } from 'crypto'
 
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-})
+const s3 = new AWS.S3()
 const dynamoDB = new AWS.DynamoDB.DocumentClient({
-  region: 'ap-southeast-1',
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  region: 'ap-southeast-1'
 })
 
 export const lambdaHandler: Handler = async (event, context): Promise<any> => {
