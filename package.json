@@ -1,0 +1,23 @@
+{
+  "name": "lambda-typescript",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.4",
+    "@types/node": "^22.9.3",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "aws-sdk": "^2.1692.0"
+  }
+}
