@@ -42,3 +42,12 @@ Update lambda function code
 ```
 aws lambda update-function-code --function-name CertificateProcessorLambda --zip-file "fileb://dist/index.zip"
 ```
+
+## Invoking Lambda Function
+
+- Go to Postman
+- Configure the following:
+  - method: GET
+  - URL: \<Lambda Function URL\>
+  - Authorization: select **AWS Signature** from the **Type** dropdown and fill in the required field
+- Click **Send**
