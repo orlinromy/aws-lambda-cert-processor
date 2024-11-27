@@ -40,7 +40,7 @@ npm run build
 Update lambda function code
 
 ```
-aws lambda update-function-code --function-name CertificateProcessorLambda --zip-file "fileb://dist/index.zip"
+aws lambda update-function-code --function-name \<lambda function name\> --zip-file "fileb://dist/index.zip"
 ```
 
 ## Invoking Lambda Function

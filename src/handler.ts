@@ -19,9 +19,9 @@ export const lambdaHandler: Handler = async (event, context): Promise<any> => {
     }
   }
   try {
-    const bucketName = 'testing-cert'
+    const bucketName = 'terr-testing-cert'
     const objectKey = 'public.pem'
-    const dynamoTableName = 'CertificateStore'
+    const dynamoTableName = 'TerrCertificateStore'
 
     console.log('reading certificate from S3...')
     const certificatePem = await getObjectFromS3(bucketName, objectKey)
