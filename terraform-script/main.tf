@@ -79,8 +79,10 @@ resource "aws_lambda_function_url" "certificate_store_lambda_function_url" {
   authorization_type = "AWS_IAM"
 }
 
+// TODO: add lambda policy for logging https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html
+
 output "lambda_function_url" {
-    value = aws_lambda_function_url.certificate_store_lambda_function_url.function_url
+  value = aws_lambda_function_url.certificate_store_lambda_function_url.function_url
 }
 
 # Permission settings
@@ -97,6 +99,7 @@ data "aws_iam_policy_document" "allow_s3_access_from_lambda" {
     ]
 
     resources = [
+      "${aws_s3_bucket.certificate_storage.arn}",
       "${aws_s3_bucket.certificate_storage.arn}/*",
     ]
   }
